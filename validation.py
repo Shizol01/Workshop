@@ -1,25 +1,31 @@
 from models import User
+errors = []
 def username_validation(username):
+
+    if not username:
+        errors.append('Nazwa użytkownika pusta')
     if len(username) > 255:
-        raise Exception('Nazwa użytkownika zbyt długa \n Max 255 znaków')
+        errors.append('Nazwa użytkownika zbyt długa \n Max 255 znaków')
 
     user = User.load_user_by_username(username)
     if user:
-        raise Exception('Nazwa użytkownika zajęta')
+        errors.append("Nazwa użytkownika zajęta")
 
-    return username
+    return username if not errors else None
 
 
 
 
 def password_validation(password,password_2):
+
     if len(password) > 80:
-        raise Exception('Hasło za długie')
+        errors.append('Hasło za długie')
 
     if len(password) < 8:
-        raise Exception('Hasło za krótkie')
+        errors.append('Hasło za krótkie')
 
     if password != password_2:
-        raise Exception('Hasła nie pasują')
+        errors.append('Hasła nie pasują')
 
-    return password
+
+    return password if not errors else None
