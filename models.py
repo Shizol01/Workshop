@@ -22,10 +22,11 @@ class User:
     @classmethod
     def load_user_by_username(cls, username):
         sql = "SELECT * FROM users WHERE username = %s"
-        ret_val = execute_sql(sql, 'workshop', username)[0]
-        u= cls(ret_val[1], ret_val[2])
-        u.id = ret_val[0]
-        return u
+        ret_val = execute_sql(sql, 'workshop', username)
+        if ret_val:
+            u= cls(ret_val[0][1], ret_val[0][2])
+            u.id = ret_val[0][0]
+            return u
 
     @classmethod
     def load_user_by_id(cls, id):

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 from models import User
+from validation import username_validation, password_validation
 
 app = Flask(__name__)
 
@@ -12,12 +13,14 @@ def create_user():
         username = request.form.get('username')
         password = request.form.get('password')
         password_2 = request.form.get('password2')
-        if password != password_2:
-          return render_template('create_user.html') + "Hasła nie pasują"
-        elif username and password:
-            u = User(username, password)
-            u.save()
-            return render_template('create_user.html') + "Zarejestrowano"
+
+        username = username_validation(username)
+        password = password_validation(password,password_2)
+
+
+        u = User(username, password)
+        u.save()
+        return render_template('create_user.html') + "Zarejestrowano"
 
 
 
