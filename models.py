@@ -11,17 +11,18 @@ class User:
     def save(self):
         if self.id is None:
             sql = "INSERT INTO users (username, password) VALUES (%s, %s) returning id"
-            ret_val = execute_sql(sql, 'active_record', self.username, self.password)[0]
-            self.id = ret_val[0]
+            ret_val = execute_sql(sql, 'workshop', self.username, self.password)[0]
+            if ret_val:
+                self.id = ret_val[0]
         else:
             sql = "UPDATE users SET password = %s WHERE id = %s"
-            ret_val = execute_sql(sql,'active_record', self.password, self.id)
+            ret_val = execute_sql(sql,'workshop', self.password, self.id)
             return True
 
     @classmethod
     def load_user_by_username(cls, username):
         sql = "SELECT * FROM users WHERE username = %s"
-        ret_val = execute_sql(sql, 'active_record', username)[0]
+        ret_val = execute_sql(sql, 'workshop', username)[0]
         u= cls(ret_val[1], ret_val[2])
         u.id = ret_val[0]
         return u
@@ -30,7 +31,7 @@ class User:
     def load_user_by_id(cls, id):
         sql = "SELECT * FROM users WHERE id = %s"
         try:
-            ret_val = execute_sql(sql, 'active_record', id)[0]
+            ret_val = execute_sql(sql, 'workshop', id)[0]
         except IndexError:
             return None
         u = cls(ret_val[1], ret_val[2])
@@ -42,7 +43,7 @@ class User:
     def load_all_users(cls):
 
         sql = "SELECT * FROM users"
-        ret_val = execute_sql(sql, 'active_record')
+        ret_val = execute_sql(sql, 'workshop')
         users = []
         for row in ret_val:
             u = cls(row[1], row[2])
@@ -54,7 +55,7 @@ class User:
     def delete_user(self):
         if self.id is not None:
             sql = "DELETE FROM users WHERE id = %s"
-            execute_sql(sql, 'active_record', self.id)
+            execute_sql(sql, 'workshop', self.id)
             self.id = None
             return True
         return False

@@ -5,7 +5,7 @@ import psycopg2
 connection_info = {
     'host': 'localhost',
     'port': 5432,
-    'username': 'postgres',
+    'user': 'postgres',
     'password': 'coderslab',
     'database': 'postgres'
 }
