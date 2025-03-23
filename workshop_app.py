@@ -66,11 +66,27 @@ def send_message():
 
     m = Message(user_id, to_id, msg)
     m.save_to_db()
-    print(msg)
     return render_template('send_message.html', success_message="Wiadomość wysłana.")
 
+@app.route('/messages', methods = ['GET', 'POST'])
+def display_messages():
+    if request.method == 'GET':
+        return render_template('login.html')
 
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
 
+        username = user_validation(username)
+        if not username:
+            return render_template('login.html', errors=errors)
+        password = user_password_validation(username, password)
+        if not password:
+            return render_template('login.html', errors=errors)
+
+        user_id = User.load_user_by_username(username)[2]
+        messages = Message.load_all_messages(user_id)
+        return render_template('list_messages.html', messages=messages)
 
 if __name__ == '__main__':
     app.run(debug = True)

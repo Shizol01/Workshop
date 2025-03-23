@@ -79,8 +79,9 @@ class Message:
 
     def save_to_db(self):
         if self._id is None:
+            formatted_date = self.creation_date.strftime('%Y/%m/%d %H:%M')
             sql = 'insert into messages(from_id, to_id, text, creation_date) values (%s,%s,%s,%s) returning id;'
-            ret_val = execute_sql(sql, 'workshop',self.from_id, self.to_id, self.text, self.creation_date.strftime('%Y-%m-%d %H:%M:%S'),)
+            ret_val = execute_sql(sql, 'workshop',self.from_id, self.to_id, self.text, formatted_date)
             if ret_val:
                 self._id = ret_val[0][0]
         else:
@@ -90,12 +91,37 @@ class Message:
                 return True
 
     @classmethod
-    def load_all_messages(cls):
-        sql = 'select * from messages;'
-        ret_val = execute_sql(sql, 'workshop')
+    def load_all_messages(cls, id):
+        sql = '''
+                SELECT 
+                    messages.text, 
+                    messages.creation_date AS date, 
+                    from_user.username AS Od, 
+                    to_user.username AS Do 
+                FROM messages
+                JOIN users AS from_user ON from_user.id = messages.from_id
+                JOIN users AS to_user ON to_user.id = messages.to_id
+                WHERE messages.from_id = %s OR messages.to_id = %s;
+            '''
+        ret_val = execute_sql(sql, 'workshop', id, id)
         if ret_val:
+            messages = []
             for message in ret_val:
-                print(f'{message} \n')
+                creation_date = message[1]
+                text = message[0]
+                from_username = message[2]
+                to_username = message[3]
+                if isinstance(creation_date, datetime):
+                    creation_date = creation_date.strftime('%Y-%m-%d %H:%M:%S')
+
+                messages.append({
+                    'Od Uzytkownika': from_username,
+                    'Do': to_username,
+                    'Wiadomość': text,
+                    'Data': creation_date
+                })
+            return messages
+        return None
 
     @classmethod
     def load_msg_by_id(cls, id):
@@ -112,4 +138,9 @@ class Message:
         ret_val = execute_sql(sql, 'workshop', id)
         if ret_val:
             sql = 'delete * from messages where id = %s;'
+
+
+
+
+m = Message.load_all_messages(2)
 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wiadomości</title>
+</head>
+<body>
+ <h1>Wiadomości</h1>
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>
+                <strong>Od:</strong> {{ message.Od_Uzytkownika }} <br>
+                <strong>Do:</strong> {{ message.Do }} <br>
+                <strong>Data:</strong> {{ message.Data }} <br>
+                <strong>Wiadomość:</strong> {{ message.Wiadomość }} <br><br>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Brak wiadomości</p>
+    {% endif %}
+</body>
+</html>
+
