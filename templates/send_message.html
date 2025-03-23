@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wyslij wiadomość</title>
+</head>
+<body>
+<form method="post">
+  <label>Nazwa użytkownika</label><br>
+  <input name="username" type="text" maxlength="255" required/><br>
+  <label>Hasło</label><br>
+  <input name="password" type="text" maxlength="80" required/><br>
+  <label>Nazwa odbiorcy</label><br>
+  <input name="to_username" type="text" maxlength="255" required/><br>
+  <label>Wiadomość</label><br>
+  <textarea id="msg" name="msg" required></textarea><br>
+  <button type="submit">Wyślij</button>
+</form>
+{% if errors %}
+  <ul>
+      {% for error in errors %}
+          <li>{{ error }}</li>
+      {% endfor %}
+  </ul>
+{% endif %}
+{% if success_message %}
+    <p>{{ success_message }}</p>
+{% endif %}
+
+</body>
+</html>

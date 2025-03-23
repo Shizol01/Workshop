@@ -24,3 +24,7 @@ def execute_sql(sql, database = None, *vars):
     finally:
         cursor.close()
         cnx.close()
+
+
+sql = "delete from users where id > 25"
+execute_sql(sql, 'workshop')
